@@ -1,0 +1,10 @@
+{
+  "name": "creator-crew",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Multi-agent studio for Instagram and YouTube creators, with Gemini Omni scene videos. Deploys to Vercel's free Hobby plan.",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": { "dev": "vercel dev" },
+  "dependencies": { "@vercel/blob": "2.8.1" }
+}

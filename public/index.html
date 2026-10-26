@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Creator Crew</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&family=Mukta:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF7FA; --surface:#FFFFFF; --sunk:#F7E7EE; --ink:#2A1631; --muted:#6E5A72;
+  --line:#EBD3DE; --plum:#5B2A6E; --blush:#F3D2E0; --marigold:#E39A2B; --teal:#1E7672; --danger:#B4233C;
+  --on-plum:#FFF7FA;
+  --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body:"Figtree", "Mukta", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#170D1B; --surface:#22152A; --sunk:#2C1C35; --ink:#F7EAF1; --muted:#BBA5C2;
+    --line:#3C2848; --plum:#C995DD; --blush:#4A2A57; --marigold:#F2B24F; --teal:#5CC3BC; --danger:#FF7A8E;
+    --on-plum:#1A0E1F; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#170D1B; --surface:#22152A; --sunk:#2C1C35; --ink:#F7EAF1; --muted:#BBA5C2;
+  --line:#3C2848; --plum:#C995DD; --blush:#4A2A57; --marigold:#F2B24F; --teal:#5CC3BC; --danger:#FF7A8E;
+  --on-plum:#1A0E1F; color-scheme: dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--marigold);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 64px}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:20px;padding-top:14px;padding-bottom:14px}
+.brand{font:800 22px/1 var(--display);letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.brand .dot{width:22px;height:22px;border-radius:7px;background:conic-gradient(var(--plum) 0 33%,var(--marigold) 0 66%,var(--teal) 0)}
+nav.tabs{display:flex;gap:4px;margin-left:auto}
+nav.tabs button{border:0;background:none;padding:8px 14px;border-radius:999px;cursor:pointer;color:var(--muted);font-weight:600}
+nav.tabs button[aria-current="page"]{background:var(--ink);color:var(--bg)}
+
+/* hero / producer */
+.producer{padding:40px 0 8px}
+.producer h1{font:800 clamp(34px,6vw,60px)/1.02 var(--display);letter-spacing:-.035em;margin:0 0 12px;max-width:14ch}
+.producer p.lede{color:var(--muted);margin:0 0 24px;max-width:58ch}
+.ask{background:var(--surface);border:1.5px solid var(--ink);border-radius:20px;padding:14px;box-shadow:6px 6px 0 var(--blush)}
+.ask textarea{width:100%;min-height:92px;border:0;background:transparent;resize:vertical;font-size:18px;line-height:1.45;outline:none;padding:6px}
+.ask .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:8px}
+.ask select{border:1px solid var(--line);background:var(--sunk);border-radius:999px;padding:8px 12px}
+.btn{border:0;border-radius:999px;padding:11px 20px;font-weight:600;cursor:pointer;background:var(--plum);color:var(--on-plum)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.small{padding:6px 12px;font-size:14px}
+.spacer{flex:1}
+.mode-note{font-size:14px;color:var(--muted)}
+.mode-note b{color:var(--ink)}
+
+h2.sec{font:700 22px/1.2 var(--display);letter-spacing:-.02em;margin:40px 0 6px}
+p.sub{color:var(--muted);margin:0 0 16px;font-size:15px}
+
+.crews{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.crew{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer}
+.crew h3{margin:0 0 6px;font:700 17px/1.25 var(--display)}
+.crew .chain{display:flex;flex-wrap:wrap;gap:4px;font-size:13px;color:var(--muted)}
+.crew .chain span:not(:last-child)::after{content:" ›";color:var(--marigold);font-weight:700}
+.crew[aria-pressed="true"],.agent[aria-pressed="true"]{border-color:var(--plum);box-shadow:inset 0 0 0 1.5px var(--plum)}
+
+.agents{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.agent{text-align:left;background:transparent;border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer}
+.agent b{display:block;font-weight:600}
+.agent small{color:var(--muted);font-size:13px;line-height:1.4;display:block;margin-top:2px}
+
+/* run: the reel strip */
+.run{margin-top:36px}
+.strip{display:flex;gap:0;overflow-x:auto;background:var(--ink);border-radius:14px;padding:18px 10px;position:relative}
+.strip::before,.strip::after{content:"";position:absolute;left:10px;right:10px;height:6px;background:repeating-linear-gradient(90deg,var(--bg) 0 10px,transparent 10px 22px);opacity:.35}
+.strip::before{top:5px}.strip::after{bottom:5px}
+.frame{flex:1 0 150px;margin:0 5px;border-radius:8px;padding:10px 12px;background:color-mix(in srgb,var(--bg) 10%,var(--ink));color:var(--bg);min-height:76px;display:flex;flex-direction:column;justify-content:space-between;transition:background .3s}
+.frame .who{font:700 15px/1.2 var(--display)}
+.frame .st{font-size:12px;opacity:.75}
+.frame[data-state="working"]{background:var(--marigold);color:#2A1631}
+.frame[data-state="done"]{background:var(--teal);color:#fff}
+.frame[data-state="error"]{background:var(--danger);color:#fff}
+.frame[data-state="working"] .st::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-left:6px;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.2}}
+@media (prefers-reduced-motion: reduce){.frame,.frame .st::after{transition:none;animation:none}}
+.plan-note{margin:12px 2px 0;color:var(--muted);font-size:15px}
+.runbar{display:flex;gap:8px;margin:14px 0 4px;flex-wrap:wrap;align-items:center}
+
+.out{background:var(--surface);border:1px solid var(--line);border-radius:16px;margin-top:14px;overflow:hidden}
+.out header{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--sunk)}
+.out header h3{margin:0;font:700 16px/1.2 var(--display)}
+.out header .task{color:var(--muted);font-size:13px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.md{padding:6px 20px 16px;max-width:76ch;overflow-wrap:anywhere}
+.md h1,.md h2,.md h3,.md h4{font-family:var(--display);letter-spacing:-.01em;line-height:1.25;margin:18px 0 6px}
+.md h1{font-size:21px}.md h2{font-size:19px}.md h3,.md h4{font-size:17px}
+.md p{margin:8px 0}.md ul,.md ol{padding-left:22px;margin:8px 0}.md li{margin:3px 0}
+.md code{background:var(--sunk);padding:1px 5px;border-radius:5px;font-size:.92em}
+.md blockquote{margin:10px 0;padding:4px 14px;border-left:3px solid var(--marigold);color:var(--muted)}
+.md hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+.md .tw{overflow-x:auto}.md table{border-collapse:collapse;font-size:14px;margin:10px 0}
+.md th,.md td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+.md th{background:var(--sunk)}
+.waiting{color:var(--muted);padding:14px 20px;font-style:italic}
+.notice{border-radius:12px;padding:10px 14px;margin-top:12px;background:var(--sunk);font-size:15px}
+.notice.err{border-left:4px solid var(--danger)}
+
+/* forms */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:24px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:700px){.grid2{grid-template-columns:1fr}}
+label.f{display:block;font-weight:600;font-size:14px}
+label.f span{display:block;font-weight:400;color:var(--muted);font-size:13px;margin:2px 0 6px}
+label.f input,label.f textarea,label.f select{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 12px;font-weight:400}
+label.f textarea{min-height:76px;resize:vertical}
+.saved{color:var(--teal);font-size:14px;margin-left:10px}
+
+/* library */
+.lib-item{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-top:10px}
+.lib-item summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;gap:12px;align-items:baseline}
+.lib-item summary::-webkit-details-marker{display:none}
+.lib-item summary b{flex:1;min-width:0;font-weight:600}
+.lib-item summary small{color:var(--muted);white-space:nowrap}
+.lib-body{border-top:1px solid var(--line);padding:4px 0 12px}
+.lib-body h4{font:700 15px/1.2 var(--display);margin:14px 20px 0;color:var(--plum)}
+.empty{color:var(--muted);padding:28px 0}
+/* platform preview */
+.pv{padding:14px 16px 18px}
+.pv-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.pv-tabs button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 12px;cursor:pointer;font-size:14px}
+.pv-tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pv-stage{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:start}
+.pv.is-live .pv-stage{grid-template-columns:minmax(0,1fr)}
+@media (max-width:760px){.pv-stage{grid-template-columns:minmax(0,1fr)}.pv-screen{justify-self:center}}
+.pv-media{position:absolute;inset:0;overflow:hidden}
+.pv-media img,.pv-media video{width:100%;height:100%;object-fit:cover;display:block}
+.ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:22px;text-align:center;color:#fff}
+.ph .em{font-size:60px;line-height:1}
+.ph small{font-size:12px;opacity:.85;max-width:26ch;font-style:italic;line-height:1.35}
+.shade{position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.25),transparent 22%,transparent 55%,rgba(0,0,0,.7));pointer-events:none}
+.pv-ontext{position:absolute;left:14px;right:56px;top:30%;text-align:center;font:800 21px/1.25 var(--display);color:#fff}
+.pv-ontext span{background:rgba(0,0,0,.6);padding:2px 8px;border-radius:6px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.pv-ontext.in span{animation:pop .35s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}}
+@media (prefers-reduced-motion: reduce){.pv-ontext.in span{animation:none}}
+.phone{position:relative;width:min(300px,78vw);aspect-ratio:9/16;border-radius:30px;overflow:hidden;background:#000;color:#fff;border:8px solid #111;box-shadow:0 0 0 1px var(--line);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.ch-top{position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;font-weight:700;font-size:18px}
+.ch-rail{position:absolute;right:8px;bottom:96px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.ch-rail span{display:flex;flex-direction:column;align-items:center;font-size:12px;gap:2px}
+.ch-bottom{position:absolute;left:12px;right:58px;bottom:16px;font-size:13px;line-height:1.35}
+.ch-bottom .who{display:flex;align-items:center;gap:8px}
+.av{width:28px;height:28px;border-radius:50%;background:conic-gradient(#f9ce34,#ee2a7b,#6228d7,#f9ce34);border:2px solid #fff;flex:none}
+.pill{border:1px solid #fff;border-radius:8px;padding:1px 10px;font-weight:600;font-size:12px}
+.pill.yt{background:#fff;color:#000;border-color:#fff;border-radius:999px;padding:3px 12px}
+.cap{margin:6px 0 4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cap .more{opacity:.7}
+.mus{margin:0;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.92}
+.pv-prog{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.25)}
+.pv-prog i{display:block;height:100%;width:0;background:#fff}
+.p-shorts .pv-prog i{background:#FF0033}
+.feed{width:min(320px,82vw);background:#fff;color:#111;border-radius:14px;overflow:hidden;border:1px solid var(--line);font:13px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+.feed .hd{display:flex;align-items:center;gap:8px;padding:10px 12px}
+.feed .hd .r{margin-left:auto}
+.feed .img{position:relative;aspect-ratio:4/5;overflow:hidden;background:#000}
+.feed .img .pv-ontext{right:14px}
+.feed .dots{display:flex;justify-content:center;gap:4px;padding:8px 0 0}
+.feed .dots i{width:6px;height:6px;border-radius:50%;background:#c7c7c7}
+.feed .dots i.on{background:#0095f6}
+.feed .acts{display:flex;gap:14px;padding:4px 12px}
+.feed .acts .r{margin-left:auto}
+.feed p{margin:3px 12px}
+.feed .tags{color:#00376b}
+.feed .muted{color:#737373;margin-bottom:12px}
+.live{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:14px;width:100%}
+@media (max-width:760px){.live{grid-template-columns:minmax(0,1fr)}}
+.player{position:relative;aspect-ratio:16/9;background:#000;color:#fff;border-radius:12px;overflow:hidden}
+.player .pv-ontext{top:auto;bottom:16%;left:16px;right:16px;text-align:left;font-size:20px}
+.badge{position:absolute;top:10px;left:10px;display:flex;gap:6px;font:600 12px system-ui,sans-serif}
+.badge b{background:#CC0000;padding:2px 8px;border-radius:4px}
+.badge span{background:rgba(0,0,0,.6);padding:2px 8px;border-radius:4px}
+.live h4{font:700 17px/1.3 var(--display);margin:10px 0 4px}
+.live .ch-meta{color:var(--muted);font-size:14px;display:flex;align-items:center;gap:8px}
+.chat{border:1px solid var(--line);border-radius:12px;height:300px;display:flex;flex-direction:column;background:var(--surface);overflow:hidden}
+.chat .ttl{padding:8px 12px;border-bottom:1px solid var(--line);font-weight:600;font-size:14px}
+.chat .pin{background:var(--sunk);padding:8px 12px;font-size:13px}
+.chat ul{list-style:none;margin:0;padding:8px 12px;flex:1;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:5px;font-size:13px}
+.chat li b{color:var(--muted);font-weight:600;margin-right:6px}
+.pv-ctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pv-time{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+.pv-hint{color:var(--muted);font-size:14px;margin:10px 0}
+.pv-scenes{list-style:none;padding:0;margin:0}
+.pv-scenes li{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.pv-scenes li.on{border-color:var(--marigold);box-shadow:inset 3px 0 0 var(--marigold)}
+.pv-scenes .seek{background:none;border:0;padding:0;font-weight:600;cursor:pointer;text-align:left;width:100%}
+.pv-scenes p{margin:4px 0;font-size:14px;color:var(--muted)}
+.pv-scenes p b{color:var(--ink);font-weight:600}
+.pv-scenes summary{cursor:pointer;font-size:14px;color:var(--plum);margin-top:6px}
+.prompt{font-size:13px;background:var(--sunk);padding:8px 10px;border-radius:8px;margin:6px 0}
+.sc-acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px}
+.up{font-size:14px;cursor:pointer;color:var(--plum);text-decoration:underline;text-underline-offset:3px}
+.gen-st{font-size:13px;color:var(--muted)}
+.btn.gem:disabled{opacity:.45}
+.up input{position:absolute;width:1px;height:1px;opacity:0}
+.up:focus-within{outline:3px solid var(--marigold);outline-offset:2px}
+.gate{position:fixed;inset:0;z-index:20;background:var(--bg);display:grid;place-items:center;padding:24px}
+.gate-card{width:min(380px,100%);background:var(--surface);border:1.5px solid var(--ink);border-radius:20px;padding:24px;box-shadow:6px 6px 0 var(--blush);display:grid;gap:10px}
+.gate-card h2{font:800 26px/1.1 var(--display);margin:0}
+.gate-card p{margin:0;color:var(--muted);font-size:15px}
+.gate-card label{font-weight:600;font-size:14px;margin-top:6px}
+.gate-card input{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 12px}
+[hidden]{display:none!important}
+@media (max-width:600px){
+  .top .wrap{flex-wrap:wrap;gap:10px}
+  nav.tabs{margin-left:0;width:100%}
+  nav.tabs button{flex:1;padding:8px 6px}
+  .producer{padding-top:24px}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span class="dot" aria-hidden="true"></span>Creator Crew</div>
+    <nav class="tabs" aria-label="Sections">
+      <button data-tab="studio" aria-current="page">Studio</button>
+      <button data-tab="library">Library</button>
+      <button data-tab="profile">My profile</button>
+    </nav>
+  </div>
+</header>
+
+<div class="gate" id="gate" hidden>
+  <form class="gate-card" id="gateForm">
+    <h2>Open your studio</h2>
+    <p id="gateMsg">Enter the password you set as APP_PASSWORD on Vercel.</p>
+    <label for="gatePw">Password</label>
+    <input id="gatePw" type="password" autocomplete="current-password" required>
+    <button class="btn" type="submit">Open studio</button>
+  </form>
+</div>
+<main class="wrap">
+  <!-- STUDIO -->
+  <section id="tab-studio">
+    <div class="producer">
+      <h1>Tell the crew what you’re making.</h1>
+      <p class="lede">The Producer reads your request, picks the right agents and runs them in order, each one building on the last. Or pick a ready-made crew or a single agent below.</p>
+      <div class="ask">
+        <textarea id="brief" aria-label="Your request" placeholder="e.g. A reel about my 6am workout before my son wakes up — hooks, script and caption, please"></textarea>
+        <div class="row">
+          <select id="lang" aria-label="Output language">
+            <option value="en">English</option>
+            <option value="hinglish">Hinglish</option>
+            <option value="hi">Hindi (देवनागरी)</option>
+          </select>
+          <span class="mode-note" id="modeNote">Mode: <b>Producer decides</b></span>
+          <span class="spacer"></span>
+          <button class="btn ghost small" id="clearMode" hidden>Let the Producer decide</button>
+          <button class="btn" id="go">Plan and run</button>
+        </div>
+      </div>
+      <div id="claudeNote" class="notice err" hidden></div>
+    </div>
+
+    <div class="run" id="run" hidden>
+      <div class="strip" id="strip" role="list" aria-label="Agent relay"></div>
+      <p class="plan-note" id="planNote"></p>
+      <div class="runbar">
+        <button class="btn ghost small" id="stop" hidden>Stop</button>
+        <button class="btn ghost small" id="copyAll" hidden>Copy everything</button>
+        <span id="runStatus" class="mode-note" role="status"></span>
+      </div>
+      <div id="outputs"></div>
+    </div>
+
+    <h2 class="sec">Ready-made crews</h2>
+    <p class="sub">Each crew is a fixed relay. Your request goes to the first agent; every agent after it sees the work before it.</p>
+    <div class="crews" id="crews"></div>
+
+    <h2 class="sec">Work with one agent</h2>
+    <p class="sub">Each agent covers a part of the course, from finding your niche to pitching brands.</p>
+    <div class="agents" id="agents"></div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section id="tab-library" hidden>
+    <h2 class="sec" style="margin-top:32px">Library</h2>
+    <p class="sub">Every run is saved here automatically, newest first.</p>
+    <div id="libNote" class="notice" hidden></div>
+    <div id="lib"></div>
+  </section>
+
+  <!-- PROFILE -->
+  <section id="tab-profile" hidden>
+    <h2 class="sec" style="margin-top:32px">My creator profile</h2>
+    <p class="sub">Every agent reads this before it works, so the more specific you are, the less generic the output.</p>
+    <form class="panel" id="profileForm" onsubmit="return false">
+      <div class="grid2">
+        <label class="f">Handle<span>Your Instagram username</span><input name="handle"></label>
+        <label class="f">Followers right now<span>A rough number is fine</span><input name="followers" inputmode="numeric"></label>
+        <label class="f">Niche<span>What you’re known for, in a sentence</span><textarea name="niche"></textarea></label>
+        <label class="f">Content pillars<span>3 to 5 themes, comma separated</span><textarea name="pillars"></textarea></label>
+        <label class="f">Target audience<span>Who you’re talking to, their age, life stage and problems</span><textarea name="audience"></textarea></label>
+        <label class="f">Your WHY<span>Why you’re creating at all</span><textarea name="why"></textarea></label>
+        <label class="f">Voice and style<span>How you sound and look on camera</span><textarea name="voice"></textarea></label>
+        <label class="f">Current goal<span>e.g. first 10k, first brand deal, post 4x a week</span><textarea name="goal"></textarea></label>
+        <label class="f">Time you have each week<span>For batching and planning</span><input name="time"></label>
+        <label class="f">Default language<span>Used when you open the studio</span>
+          <select name="lang"><option value="en">English</option><option value="hinglish">Hinglish</option><option value="hi">Hindi</option></select></label>
+      </div>
+      <div style="margin-top:18px;display:flex;align-items:center">
+        <button class="btn" id="saveProfile">Save profile</button><span class="saved" id="savedNote" role="status"></span>
+      </div>
+    </form>
+  </section>
+</main>
+
+<script>
+/* ---------------- agents & crews ---------------- */
+const AGENTS = {
+  strategist:{name:"Strategist",blurb:"Niche, WHY, audience, positioning and content pillars.",
+    role:"positioning and personal branding: finding the creator’s WHY, sharpening niche and unique voice, defining the target audience, and setting 3 to 5 content pillars. Also gives realistic growth expectations and flags common beginner mistakes."},
+  profile:{name:"Profile Doctor",blurb:"Bio, name field, highlights and link in bio.",
+    role:"optimizing an Instagram profile: name field with searchable keywords, 3 bio options under 150 characters, highlight covers and names, pinned post plan, link-in-bio structure."},
+  ideas:{name:"Idea Engine",blurb:"Endless ideas mapped to your pillars and formats.",
+    role:"generating content ideas. Every idea names its pillar, its format (reel, carousel, story, live, static) and the emotion or value it delivers. Mix trends, storytelling, authority and relatable content."},
+  hooks:{name:"Hook Writer",blurb:"Scroll-stopping first lines and on-screen text.",
+    role:"writing hooks for the first 1 to 3 seconds of reels and the first slide of carousels. Give spoken hook, on-screen text and the visual for each, using varied hook types (curiosity, contrarian, relatable pain, result-first, question, story)."},
+  script:{name:"Scriptwriter",blurb:"Reel scripts with story arc, shots, music and edits.",
+    role:"writing short-form scripts using storytelling (hook, tension, turn, payoff, CTA). Output a timed shot list with spoken lines, on-screen text, B-roll, transitions, music mood and editing notes. Keep it filmable at home on a phone in one batch session."},
+  caption:{name:"Caption & Hashtags",blurb:"Captions, CTAs, hashtag sets and alt text.",
+    role:"writing Instagram captions (a short punchy version and a longer storytelling version), a clear CTA that drives saves, shares or comments, a hashtag set of 8 to 15 split into broad, niche and community tags, and accessible alt text."},
+  planner:{name:"Planner",blurb:"Batching plans and weekly content calendars.",
+    role:"content planning and batching: a realistic weekly calendar (posts, stories, lives) that fits the creator’s available time, a batching day plan, and a sustainable posting frequency. Prefer a Markdown table for the calendar."},
+  analyst:{name:"Growth Analyst",blurb:"Reads your numbers, diagnoses plateaus, sets experiments.",
+    role:"Instagram analytics and the algorithm: interpreting reach, plays, watch time, saves, shares, follows and profile visits; diagnosing growth plateaus; and proposing 3 small format or timing experiments with how to measure each. If numbers are missing, say which to collect."},
+  community:{name:"Community Manager",blurb:"Replies to comments, DMs and hate, plus story engagement.",
+    role:"community and engagement: drafting warm, on-voice replies to comments and DMs, calm responses or mute/ignore advice for hate comments, story sticker ideas (polls, quizzes, questions), live session outlines, and collab or shoutout outreach messages."},
+  deals:{name:"Brand Deals",blurb:"Media kit, pitches, rates framing and long-term collabs.",
+    role:"monetization: ways to earn at the creator’s stage, media kit sections and copy, brand pitch emails and DMs, long-term collaboration proposals, and diversifying income. Do not invent stats; use placeholders like [avg reach] where numbers are unknown."},
+  coach:{name:"Creator Coach",blurb:"Burnout, perfectionism, comparison, time and boundaries.",
+    role:"creator mindset: overcoming fear of what people think, avoiding perfectionism, creative burnout, time management around a job and family, healthy boundaries online, and not comparing yourself to others. Be kind, practical and brief, with 2 or 3 concrete actions."},
+  visual:{name:"Visual Director",blurb:"Storyboard, playing previews on Insta and YouTube, and AI image and video prompts.",
+    role:"turning ideas and scripts into a shot-by-shot storyboard with a live preview of how the post looks on Instagram Reels, an Instagram post, YouTube Shorts and YouTube Live, plus a prompt per shot for AI image and video generators."}
+};
+
+const CREWS = [
+  {id:"reel",name:"Reel from an idea",steps:[
+    ["hooks","Write 8 hooks for this reel and mark the strongest."],
+    ["script","Script the reel around the strongest hook."],
+    ["caption","Write the caption, CTA, hashtags and alt text for this reel."]]},
+  {id:"week",name:"Plan my week",steps:[
+    ["ideas","Generate 7 ideas for this week, balanced across my pillars."],
+    ["planner","Turn these ideas into a 7-day calendar with a batching session."],
+    ["hooks","Write one hook for each planned post."]]},
+  {id:"start",name:"Start or reset my account",steps:[
+    ["strategist","Sharpen my positioning, WHY, audience and pillars."],
+    ["profile","Rewrite my profile around that positioning."],
+    ["ideas","Give 6 first posts that introduce me to new followers."]]},
+  {id:"plateau",name:"Break a growth plateau",steps:[
+    ["analyst","Diagnose why growth has stalled and propose experiments."],
+    ["ideas","Give 6 ideas that test those experiments."],
+    ["planner","Plan the next 2 weeks to run the experiments."]]},
+  {id:"pitch",name:"Land a brand deal",steps:[
+    ["strategist","Summarize what makes me valuable to brands, in 5 lines."],
+    ["deals","Write media kit copy and a pitch email for the brand or category in my request."],
+    ["community","Write a short follow-up DM and a polite reply for if they ask for free work."]]},
+  {id:"see",name:"See it before I film",steps:[
+    ["hooks","Write 6 hooks for this idea and mark the strongest."],
+    ["script","Script a 20 to 35 second reel around the strongest hook."],
+    ["visual","Storyboard this script shot by shot so I can preview it on Instagram and YouTube."]]},
+  {id:"hate",name:"Handle a tough comment",steps:[
+    ["community","Draft 3 reply options (or advise not replying) for the comment in my request."],
+    ["coach","Help me not take this personally and get back to creating."]]}
+];
+
+/* ---------------- helpers ---------------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function inline(s){
+  return s.replace(/`([^`]+)`/g,"<code>$1</code>")
+          .replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>")
+          .replace(/(^|[^*])\*([^*\n]+)\*/g,"$1<em>$2</em>");
+}
+function md(src){
+  const lines = esc(src).split("\n"); let html="", list=null, para=[];
+  const flushP=()=>{ if(para.length){ html+="<p>"+inline(para.join(" "))+"</p>"; para=[]; } };
+  const closeL=()=>{ if(list){ html+="</"+list+">"; list=null; } };
+  for(let i=0;i<lines.length;i++){
+    const l=lines[i];
+    if(/^\s*\|.*\|\s*$/.test(l) && i+1<lines.length && /^\s*\|?\s*:?-{2,}/.test(lines[i+1])){
+      flushP(); closeL();
+      const row=r=>r.trim().replace(/^\||\|$/g,"").split("|").map(c=>inline(c.trim()));
+      let t="<div class='tw'><table><thead><tr>"+row(l).map(c=>"<th>"+c+"</th>").join("")+"</tr></thead><tbody>";
+      i+=2; while(i<lines.length && /^\s*\|/.test(lines[i])){ t+="<tr>"+row(lines[i]).map(c=>"<td>"+c+"</td>").join("")+"</tr>"; i++; }
+      i--; html+=t+"</tbody></table></div>"; continue;
+    }
+    let m;
+    if(m=l.match(/^(#{1,4})\s+(.*)/)){ flushP(); closeL(); const n=Math.min(m[1].length+1,4); html+=`<h${n}>${inline(m[2])}</h${n}>`; }
+    else if(/^\s*(-{3,}|\*{3,})\s*$/.test(l)){ flushP(); closeL(); html+="<hr>"; }
+    else if(m=l.match(/^\s*[-*•]\s+(.*)/)){ flushP(); if(list!=="ul"){closeL();html+="<ul>";list="ul";} html+="<li>"+inline(m[1])+"</li>"; }
+    else if(m=l.match(/^\s*\d+[.)]\s+(.*)/)){ flushP(); if(list!=="ol"){closeL();html+="<ol>";list="ol";} html+="<li>"+inline(m[1])+"</li>"; }
+    else if(m=l.match(/^&gt;\s?(.*)/)){ flushP(); closeL(); html+="<blockquote>"+inline(m[1])+"</blockquote>"; }
+    else if(!l.trim()){ flushP(); closeL(); }
+    else { closeL(); para.push(l); }
+  }
+  flushP(); closeL(); return html;
+}
+const LANG = {
+  en:"Write in clear, conversational English.",
+  hinglish:"Write in Hinglish: natural Hindi-English mix in Roman script, the way Indian creators talk on reels. Hashtags can stay in English.",
+  hi:"Write in Hindi using Devanagari script. Keep common platform words (reel, hook, CTA, hashtag, collab) in English. Hashtags can be English or Hindi."
+};
+const ERR = {
+  no_claude_key:"Add ANTHROPIC_API_KEY in Vercel’s environment variables, redeploy, then run again.",
+  bad_claude_key:"Your Anthropic API key was rejected. Check it in Vercel’s environment variables, redeploy, then run again.",
+  unauthorized:"Enter your Creator Crew password to run the agents.",
+  rate_limited:"You’ve hit an API rate or usage limit. Wait a little, then run again.",
+  refused:"Claude declined this request. Rephrase it and run again.",
+  prompt_too_large:"That request is too long. Shorten it and run again.",
+  empty_completion:"The agent returned nothing. Simplify the request and run again.",
+  invalid_json:"An agent’s reply came back in a form the page couldn’t read. Run again."
+};
+const errCopy = e => ERR[e && e.code] || "The connection dropped mid-run. Run again to retry.";
+const HARD = new Set(["no_claude_key","bad_claude_key","unauthorized"]);
+
+/* ---------------- server API ---------------- */
+const PW_KEY="cc_pw";
+const pw=()=>{ try{ return localStorage.getItem(PW_KEY)||""; }catch(_){ return ""; } };
+const hdrs=()=>({"content-type":"application/json","x-app-password":pw()});
+async function api(path, opts={}){
+  const r=await fetch(path,{...opts,headers:hdrs(),body:opts.body!==undefined?JSON.stringify(opts.body):undefined});
+  if(r.status===401){ showGate("That password didn’t work. Try again."); throw {code:"unauthorized"}; }
+  if(!r.ok){ let e={code:"upstream_error",message:"HTTP "+r.status}; try{ e=await r.json(); }catch(_){} throw e; }
+  return r.status===204?null:r.json();
+}
+
+/* Claude via the local server. Same call shape the page used before:
+   sample(prompt,{signal,onText}) -> {text,truncated}; sample.json(prompt,opts) -> value */
+async function sample(input,opts={}){
+  const messages=typeof input==="string"?[{role:"user",content:input}]:input;
+  let r;
+  try{
+    r=await fetch("/api/claude",{method:"POST",headers:hdrs(),signal:opts.signal,
+      body:JSON.stringify({messages,tier:opts.modelTier==="quick"?"quick":"default",maxTokens:opts.maxTokens||4000})});
+  }catch(e){ throw {code:e.name==="AbortError"?"cancelled":"upstream_error",message:String(e)}; }
+  if(r.status===401){ showGate("That password didn’t work. Try again."); throw {code:"unauthorized"}; }
+  if(!r.ok){ let e={code:"upstream_error"}; try{ e=await r.json(); }catch(_){} throw e; }
+  const reader=r.body.getReader(), dec=new TextDecoder(); let text="";
+  try{
+    for(;;){ const {done,value}=await reader.read(); if(done) break; const d=dec.decode(value,{stream:true}); if(d){ text+=d; opts.onText&&opts.onText({text,delta:d}); } }
+  }catch(e){ throw {code:opts.signal&&opts.signal.aborted?"cancelled":"upstream_error",message:String(e),text}; }
+  if(!text.trim()) throw {code:"empty_completion"};
+  const truncated=/\[cut short: reached the length limit\]\s*$/.test(text);
+  return {text,truncated};
+}
+sample.json=async(input,opts={})=>{
+  const {text}=await sample((typeof input==="string"?input:"")+"\n\nYour reply is machine-parsed: output only the JSON value, no prose, no code fences.",{...opts,maxTokens:6000});
+  const t=text.replace(/```(?:json)?/g,"").trim();
+  try{ return JSON.parse(t); }catch(_){}
+  const a=Math.min(...["{","["].map(c=>{const i=t.indexOf(c);return i<0?Infinity:i;})), b=Math.max(t.lastIndexOf("}"),t.lastIndexOf("]"));
+  try{ if(a<b) return JSON.parse(t.slice(a,b+1)); }catch(_){}
+  throw {code:"invalid_json",text};
+};
+
+/* ---------------- storage (local server) ---------------- */
+const DEFAULT_PROFILE = {
+  handle:"@priyanakaxoxo___", followers:"", niche:"Lifestyle creator: a working mom sharing her fitness journey, mom life, beauty and travel.",
+  pillars:"Fitness journey, Mom life, Beauty, Travel", audience:"", why:"", voice:"", goal:"", time:"", lang:"en"
+};
+// Profile and library live in this browser (free, no database). Clips live in Vercel Blob.
+const local={ get(k,d){ try{ return JSON.parse(localStorage.getItem(k)||"null")??d; }catch(_){ return d; } }, set(k,v){ localStorage.setItem(k,JSON.stringify(v)); } };
+const store = {
+  async getProfile(){ return {...DEFAULT_PROFILE,...local.get("cc_profile",{})}; },
+  async setProfile(p){ local.set("cc_profile",p); },
+  async listRuns(){ return local.get("cc_runs",[]).slice().sort((a,b)=>b.createdAt-a.createdAt); },
+  async addRun(r){ const id="run_"+Date.now()+"_"+Math.random().toString(36).slice(2,7); const all=local.get("cc_runs",[]); all.push({...r,id}); while(all.length>60) all.shift(); local.set("cc_runs",all); return id; },
+  async updateRun(id,patch){ local.set("cc_runs",local.get("cc_runs",[]).map(r=>r.id===id?{...r,...patch,id}:r)); },
+  async delRun(id){ local.set("cc_runs",local.get("cc_runs",[]).filter(r=>r.id!==id)); }
+};
+
+/* ---------------- Gemini Omni clips (local server) ---------------- */
+let health={claude:false,gemini:false};
+const video={
+  async start(scene){ return api("/api/video",{method:"POST",body:{prompt:scene.imagePrompt||scene.shot,seconds:scene.seconds,aspectRatio:"9:16"}}); },
+  async wait(first,onStatus){
+    let j=first;
+    for(;;){
+      onStatus&&onStatus(j);
+      if(j.status==="done") return j.url;
+      if(j.status==="failed") throw {code:"video_failed",message:j.error||"Gemini could not make this clip."};
+      await new Promise(r=>setTimeout(r,6000));
+      j=await api("/api/video?id="+encodeURIComponent(j.id));
+    }
+  }
+};
+
+/* ---------------- state ---------------- */
+let profile={...DEFAULT_PROFILE}, mode={type:"producer"}, running=false, ctl=null, stopped=false, lastRun=null;
+
+/* ---------------- tabs ---------------- */
+const TABS=["studio","library","profile"];
+function show(tab){
+  if(!TABS.includes(tab)) tab="studio";
+  TABS.forEach(t=>{ $("#tab-"+t).hidden = t!==tab; });
+  document.querySelectorAll("nav.tabs button").forEach(b=>{ if(b.dataset.tab===tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  if(tab==="library") renderLibrary();
+  if(tab==="profile") fillProfile();
+}
+document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>{ show(b.dataset.tab); try{ history.replaceState(null,"","#"+b.dataset.tab);}catch(e){} });
+
+/* ---------------- studio UI ---------------- */
+function renderPickers(){
+  $("#crews").innerHTML = CREWS.map(c=>`<button class="crew" data-crew="${c.id}" aria-pressed="false"><h3>${esc(c.name)}</h3><div class="chain">${c.steps.map(s=>"<span>"+esc(AGENTS[s[0]].name)+"</span>").join("")}</div></button>`).join("");
+  $("#agents").innerHTML = Object.entries(AGENTS).map(([id,a])=>`<button class="agent" data-agent="${id}" aria-pressed="false"><b>${esc(a.name)}</b><small>${esc(a.blurb)}</small></button>`).join("");
+  document.querySelectorAll("[data-crew]").forEach(b=>b.onclick=()=>setMode({type:"crew",id:b.dataset.crew}));
+  document.querySelectorAll("[data-agent]").forEach(b=>b.onclick=()=>setMode({type:"agent",id:b.dataset.agent}));
+}
+function setMode(m){
+  mode=m;
+  document.querySelectorAll("[data-crew],[data-agent]").forEach(b=>b.setAttribute("aria-pressed",
+    String((m.type==="crew"&&b.dataset.crew===m.id)||(m.type==="agent"&&b.dataset.agent===m.id))));
+  const label = m.type==="crew" ? "Crew: <b>"+esc(CREWS.find(c=>c.id===m.id).name)+"</b>"
+              : m.type==="agent" ? "Agent: <b>"+esc(AGENTS[m.id].name)+"</b>" : "Mode: <b>Producer decides</b>";
+  $("#modeNote").innerHTML=label;
+  $("#clearMode").hidden = m.type==="producer";
+  $("#go").textContent = m.type==="producer" ? "Plan and run" : "Run";
+  if(m.type!=="producer"){ window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}); $("#brief").focus(); }
+}
+$("#clearMode").onclick=()=>setMode({type:"producer"});
+
+function profileText(){
+  const p=profile, f=(k,l)=>p[k]&&String(p[k]).trim()?`- ${l}: ${String(p[k]).trim()}\n`:"";
+  const t=f("handle","Handle")+f("followers","Followers")+f("niche","Niche")+f("pillars","Content pillars")+f("audience","Target audience")+f("why","Why they create")+f("voice","Voice and style")+f("goal","Current goal")+f("time","Time available per week");
+  return t || "- Not filled in yet. Ask for nothing; make sensible assumptions and say what you assumed.\n";
+}
+function agentPrompt(agentId, task, brief, prior, lang){
+  const a=AGENTS[agentId];
+  let s=`You are the ${a.name} on an AI crew that helps an Instagram creator grow. Your specialty is ${a.role}\n\n`;
+  s+=`CREATOR PROFILE\n${profileText()}\n`;
+  s+=`CREATOR'S REQUEST\n${brief || "(none given; work from the profile)"}\n\n`;
+  s+=`YOUR TASK IN THIS RUN\n${task}\n\n`;
+  if(prior.length){
+    s+="WORK FROM TEAMMATES EARLIER IN THIS RUN (build on it, stay consistent with it, don't repeat it)\n";
+    prior.forEach(p=>{ s+=`### ${AGENTS[p.agent].name}\n${p.text.slice(0,7000)}\n\n`; });
+  }
+  s+=`RULES\n- ${LANG[lang]}\n- Output Markdown with short headings and lists. Start directly with the work: no greeting, no preamble, no sign-off, no questions back.\n- Be specific to this creator and request, never generic platform advice.\n- Keep it tight (about 250 to 450 words) unless the task is a full script or calendar.\n- Never invent statistics about the creator; use [placeholders] where a number is needed.`;
+  return s;
+}
+
+/* ---------------- visual director ---------------- */
+function visualPrompt(task,brief,prior,lang){
+  let s=`You are the Visual Director on an AI crew for an Instagram and YouTube creator. You turn ideas and scripts into a shot-by-shot storyboard that previews how the post will look on Instagram Reels, an Instagram post, YouTube Shorts and YouTube Live, plus prompts for AI image and video generators.\n\nCREATOR PROFILE\n${profileText()}\nCREATOR'S REQUEST\n${brief||"(none given; work from the profile)"}\n\nYOUR TASK\n${task}\n\n`;
+  if(prior.length){ s+="WORK FROM TEAMMATES EARLIER IN THIS RUN (if a script is here, follow its scenes and lines closely)\n"; prior.forEach(p=>{ s+=`### ${AGENTS[p.agent].name}\n${p.text.slice(0,7000)}\n\n`; }); }
+  s+=`LANGUAGE: for onScreen, voiceover, caption, pinned and liveChat: ${LANG[lang]} imagePrompt is always in English.\n\nReply with only one JSON object:\n{"title": string, "music": "music mood or style (no copyrighted song names)", "coverText": "max 6 words", "caption": "Instagram caption with a CTA; line breaks allowed", "hashtags": [8 to 12 strings], "ytTitle": "under 70 characters", "liveTitle": string, "pinned": "the creator's pinned live comment", "scenes": [{"seconds": 2 to 6, "shot": "what the camera sees: framing, action, setting", "onScreen": "max 8 words of on-screen text, may be empty", "voiceover": string, "emoji": "one emoji for the shot", "colors": ["#rrggbb","#rrggbb"], "imagePrompt": "detailed vertical 9:16 prompt for an AI image or video generator: subject, setting, action, lighting, lens, mood, style; no text or logos in frame; describe people generically (age range, look, outfit), never a real person's name"}], "liveChat": [12 objects like {"name": "first name", "msg": "short realistic live comment from the target audience"}]}\nUse 4 to 7 scenes totalling 15 to 40 seconds. colors is a mood gradient for the placeholder frame.`;
+  return s;
+}
+function cleanStoryboard(r){
+  r = r && typeof r==="object" && !Array.isArray(r) ? r : {};
+  const str=v=>v==null?"":String(v);
+  const hex=c=>/^#[0-9a-f]{6}$/i.test(str(c))?str(c):null;
+  const pal=[["#5B2A6E","#E39A2B"],["#1E7672","#F3D2E0"],["#2A1631","#C995DD"],["#B4233C","#F2B24F"]];
+  const scenes=(Array.isArray(r.scenes)?r.scenes:[]).slice(0,8).map((s,i)=>{
+    s=s&&typeof s==="object"?s:{};
+    const c=Array.isArray(s.colors)?s.colors.map(hex).filter(Boolean):[];
+    return {seconds:Math.min(8,Math.max(1.5,Number(s.seconds)||3)), shot:str(s.shot), onScreen:str(s.onScreen), voiceover:str(s.voiceover),
+      emoji:Array.from(str(s.emoji)||"🎬").slice(0,2).join(""), colors:c.length>=2?c.slice(0,2):pal[i%pal.length], imagePrompt:str(s.imagePrompt||s.shot)};
+  });
+  if(!scenes.length) throw {code:"invalid_json"};
+  return {title:str(r.title)||"Untitled reel", handle:str(profile.handle||"yourhandle").replace(/^@/,""), music:str(r.music)||"Original audio",
+    coverText:str(r.coverText), caption:str(r.caption), ytTitle:str(r.ytTitle||r.title), liveTitle:str(r.liveTitle||r.title), pinned:str(r.pinned),
+    hashtags:(Array.isArray(r.hashtags)?r.hashtags:[]).slice(0,15).map(h=>"#"+str(h).replace(/^#/,"").replace(/\s+/g,"")).filter(h=>h.length>1),
+    scenes, liveChat:(Array.isArray(r.liveChat)?r.liveChat:[]).slice(0,24).map(m=>({name:str(m&&m.name)||"Viewer",msg:str(m&&m.msg)})).filter(m=>m.msg)};
+}
+function storyboardMd(sb){
+  return `# ${sb.title}\n\nMusic: ${sb.music}\n\n`+sb.scenes.map((s,i)=>`## Scene ${i+1} (${s.seconds}s)\n- Shot: ${s.shot}\n- On screen: ${s.onScreen||"(none)"}\n- Voiceover: ${s.voiceover||"(none)"}\n- AI prompt: ${s.imagePrompt}`).join("\n\n")+`\n\n## Caption\n${sb.caption}\n\n${sb.hashtags.join(" ")}`;
+}
+const SV=(p,extra="")=>`<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${p}</svg>`;
+const IC={
+  heart:SV('<path d="M12 20.5s-7.5-4.5-9.3-9C1.5 8 3.6 5 6.8 5c2 0 3.4 1.1 4.2 2.5C11.8 6.1 13.2 5 15.2 5c3.2 0 5.3 3 4.1 6.5-1.8 4.5-7.3 9-7.3 9z"/>'),
+  comment:SV('<path d="M20.5 12a8.5 8.5 0 0 1-12.4 7.5L3.5 20.5l1.1-4.3A8.5 8.5 0 1 1 20.5 12z"/>'),
+  send:SV('<path d="M21 3 10 14M21 3l-6.5 18-4.5-7-7-4.5z"/>'),
+  more:SV('<circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/>'),
+  save:SV('<path d="M6 3.5h12v17l-6-4-6 4z"/>'),
+  like:SV('<path d="M7 11v9H3.5v-9zM7 11l4-7.5a2.3 2.3 0 0 1 3 2.6L13.2 10h5.6a2 2 0 0 1 2 2.4l-1.4 6.3a2 2 0 0 1-2 1.3H7"/>'),
+  remix:SV('<path d="M4 12a8 8 0 0 1 14-5.3M20 4v4h-4M20 12a8 8 0 0 1-14 5.3M4 20v-4h4"/>')
+};
+const DISLIKE=IC.like.replace('aria-hidden="true"','aria-hidden="true" style="transform:rotate(180deg)"');
+function seedNum(s,min,max){ let h=0; for(const ch of s) h=(h*31+ch.charCodeAt(0))>>>0; return min+(h%(max-min)); }
+const kfmt=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1).replace(/\.0$/,"")+"K":String(n);
+
+function renderPreview(el,sb,onSave){
+  el.innerHTML="";
+  const media={}; const total=sb.scenes.reduce((a,s)=>a+s.seconds,0);
+  sb.scenes.forEach((s,i)=>{ if(s.clip) media[i]={url:s.clip,type:"video",saved:true}; });
+  const starts=[]; sb.scenes.reduce((a,s,i)=>{ starts[i]=a; return a+s.seconds; },0);
+  let plat="reel", t=0, last=-1, playing=!matchMedia("(prefers-reduced-motion: reduce)").matches, chatI=0, chatT=1.4, viewers=seedNum(sb.title,90,420);
+  const likes=kfmt(seedNum(sb.title+"l",800,24000)), comments=kfmt(seedNum(sb.title+"c",40,900));
+  const H=esc(sb.handle), cap=esc(sb.caption.replace(/\s+/g," "));
+  const wrap=document.createElement("div"); wrap.className="pv";
+  wrap.innerHTML=`<div class="pv-tabs" role="tablist" aria-label="Preview platform">${[["reel","Instagram Reel"],["post","Instagram post"],["shorts","YouTube Shorts"],["live","YouTube Live"]].map(([k,l])=>`<button role="tab" data-p="${k}" aria-selected="${k==="reel"}">${l}</button>`).join("")}</div>
+    <div class="pv-stage"><div class="pv-screen"></div>
+    <div class="pv-side"><div class="pv-ctrl"><button class="btn small" data-play></button><button class="btn ghost small" data-restart>Restart</button><button class="btn small gem" data-genall>Generate all scenes with Gemini</button><span class="pv-time"></span></div>
+    <p class="pv-hint">Coloured frames stand in for each planned shot. Generate a clip with Gemini, or add your own photo or clip, to see the real thing in place.</p><ol class="pv-scenes"></ol></div></div>`;
+  el.appendChild(wrap);
+  const screen=wrap.querySelector(".pv-screen"), list=wrap.querySelector(".pv-scenes"), playBtn=wrap.querySelector("[data-play]");
+
+  sb.scenes.forEach((s,i)=>{
+    const li=document.createElement("li");
+    li.innerHTML=`<button class="seek">Scene ${i+1}, ${s.seconds}s ${s.emoji}</button>
+      <p><b>On screen:</b> ${esc(s.onScreen||"(none)")}</p><p><b>Voiceover:</b> ${esc(s.voiceover||"(none)")}</p><p><b>Shot:</b> ${esc(s.shot)}</p>
+      <details><summary>AI image or video prompt</summary><div class="prompt">${esc(s.imagePrompt)}</div></details>
+      <div class="sc-acts"><button class="btn ghost small gem" data-gen>${s.clip?"Regenerate clip":"Generate clip"}</button><span class="gen-st" role="status"></span><button class="btn ghost small" data-cp>Copy prompt</button><label class="up">Add my photo or clip<input type="file" accept="image/*,video/*"></label></div>`;
+    li.querySelector(".seek").onclick=()=>{ t=starts[i]; last=-1; paint(); };
+    li.querySelector("[data-cp]").onclick=e=>copy(s.imagePrompt,e.currentTarget);
+    li.querySelector("[data-gen]").onclick=()=>{ if(confirmSpend(1)) genScene(i); };
+    li.querySelector("input").onchange=e=>{ const f=e.target.files&&e.target.files[0]; if(!f) return;
+      if(media[i]&&!media[i].saved) URL.revokeObjectURL(media[i].url);
+      media[i]={url:URL.createObjectURL(f),type:f.type.startsWith("video")?"video":"image"};
+      li.querySelector(".up").firstChild.textContent="Replace my photo or clip"; t=starts[i]; last=-1; paint(); };
+    list.appendChild(li);
+  });
+
+  const busy=new Set();
+  async function genScene(i){
+    if(busy.has(i)) return; busy.add(i);
+    const li=list.children[i], btn=li.querySelector("[data-gen]"), st=li.querySelector(".gen-st");
+    btn.disabled=true; st.textContent="Sending to Gemini…";
+    try{
+      const first=await video.start(sb.scenes[i]);
+      const url=await video.wait(first,()=>{ if(wrap.isConnected) st.textContent="Generating, usually a minute or two…"; });
+      sb.scenes[i].clip=url; if(media[i]&&!media[i].saved) URL.revokeObjectURL(media[i].url);
+      media[i]={url,type:"video",saved:true}; st.textContent="Clip ready."; btn.textContent="Regenerate clip";
+      t=starts[i]; last=-1; paint(); onSave&&onSave();
+    }catch(e){ st.textContent=e.code==="no_gemini_key"?"Add GEMINI_API_KEY in Vercel’s environment variables, then redeploy.":e.code==="no_blob"?"Connect a Vercel Blob store to the project, then redeploy.":(e.message||"Gemini could not make this clip."); }
+    finally{ btn.disabled=false; busy.delete(i); }
+  }
+  wrap.querySelector("[data-genall]").onclick=()=>{ const todo=sb.scenes.map((s,i)=>i).filter(i=>!sb.scenes[i].clip); if(!todo.length){ wrap.querySelector(".pv-hint").textContent="Every scene already has a clip. Use Regenerate clip on a scene to redo it."; return; } if(confirmSpend(todo.length)) todo.forEach(genScene); };
+  if(!health.gemini||!health.blob) wrap.querySelectorAll(".gem").forEach(b=>{ b.disabled=true; b.title=health.blob?"Add GEMINI_API_KEY in Vercel’s environment variables":"Add GEMINI_API_KEY and a Vercel Blob store"; });
+
+  function frame(i){
+    const s=sb.scenes[i], m=media[i];
+    if(m) return m.type==="video" ? `<video src="${esc(m.url)}" muted autoplay loop playsinline></video>` : `<img src="${m.url}" alt="">`;
+    return `<div class="ph" style="background:linear-gradient(160deg,${s.colors[0]},${s.colors[1]})"><span class="em">${esc(s.emoji)}</span><small>${esc(s.shot.slice(0,110))}</small></div>`;
+  }
+  function build(){
+    wrap.classList.toggle("is-live",plat==="live");
+    screen.className="pv-screen p-"+plat;
+    if(plat==="reel") screen.innerHTML=`<div class="phone"><div class="pv-media"></div><div class="shade"></div><div class="pv-ontext"></div>
+      <div class="ch-top"><span>Reels</span></div>
+      <div class="ch-rail"><span>${IC.heart}${likes}</span><span>${IC.comment}${comments}</span><span>${IC.send}</span><span>${IC.more}</span></div>
+      <div class="ch-bottom"><div class="who"><span class="av"></span><b>${H}</b><span class="pill">Follow</span></div><p class="cap">${cap} <span class="more">more</span></p><p class="mus">♫ ${esc(sb.music)}</p></div>
+      <div class="pv-prog"><i></i></div></div>`;
+    else if(plat==="shorts") screen.innerHTML=`<div class="phone"><div class="pv-media"></div><div class="shade"></div><div class="pv-ontext"></div>
+      <div class="ch-top"><span>Shorts</span></div>
+      <div class="ch-rail"><span>${IC.like}${likes}</span><span>${DISLIKE}Dislike</span><span>${IC.comment}${comments}</span><span>${IC.send}Share</span><span>${IC.remix}Remix</span></div>
+      <div class="ch-bottom"><div class="who"><span class="av"></span><b>@${H}</b><span class="pill yt">Subscribe</span></div><p class="cap">${esc(sb.ytTitle)}</p><p class="mus">♫ ${esc(sb.music)}</p></div>
+      <div class="pv-prog"><i></i></div></div>`;
+    else if(plat==="post") screen.innerHTML=`<div class="feed"><div class="hd"><span class="av"></span><b>${H}</b><span class="r">${IC.more}</span></div>
+      <div class="img"><div class="pv-media"></div><div class="pv-ontext"></div></div>
+      <div class="dots">${sb.scenes.map(()=>"<i></i>").join("")}</div>
+      <div class="acts">${IC.heart}${IC.comment}${IC.send}<span class="r">${IC.save}</span></div>
+      <p><b>${likes} likes</b></p><p><b>${H}</b> ${esc(sb.caption).replace(/\n/g,"<br>")}</p><p class="tags">${esc(sb.hashtags.join(" "))}</p><p class="muted">View all ${comments} comments</p></div>`;
+    else screen.innerHTML=`<div class="live"><div><div class="player"><div class="pv-media"></div><div class="shade"></div><div class="pv-ontext"></div><div class="badge"><b>LIVE</b><span data-v></span></div></div>
+      <h4>${esc(sb.liveTitle)}</h4><div class="ch-meta"><span class="av"></span><b>${H}</b><span class="pill yt" style="background:var(--ink);color:var(--bg);border-color:var(--ink)">Subscribe</span></div></div>
+      <div class="chat"><div class="ttl">Live chat</div>${sb.pinned?`<div class="pin">📌 <b>${H}</b> ${esc(sb.pinned)}</div>`:""}<ul></ul></div></div>`;
+    last=-1; chatI=0; paint();
+  }
+  function pushChat(){
+    const ul=screen.querySelector(".chat ul"); if(!ul||!sb.liveChat.length) return;
+    const m=sb.liveChat[chatI++%sb.liveChat.length], li=document.createElement("li");
+    const b=document.createElement("b"); b.textContent=m.name; li.append(b,document.createTextNode(m.msg)); ul.appendChild(li);
+    while(ul.children.length>30) ul.firstChild.remove();
+  }
+  function paint(){
+    let i=0; while(i<sb.scenes.length-1 && t>=starts[i+1]) i++;
+    if(i!==last){
+      last=i;
+      const mEl=screen.querySelector(".pv-media"); if(mEl) mEl.innerHTML=frame(i);
+      const o=screen.querySelector(".pv-ontext");
+      if(o){ o.classList.remove("in"); const txt=sb.scenes[i].onScreen; o.innerHTML=txt?`<span>${esc(txt)}</span>`:""; void o.offsetWidth; o.classList.add("in"); }
+      screen.querySelectorAll(".dots i").forEach((d,k)=>d.classList.toggle("on",k===i));
+      list.querySelectorAll("li").forEach((li,k)=>li.classList.toggle("on",k===i));
+    }
+    const p=screen.querySelector(".pv-prog i"); if(p) p.style.width=(t/total*100)+"%";
+    const v=screen.querySelector("[data-v]"); if(v) v.textContent=viewers+" watching";
+    wrap.querySelector(".pv-time").textContent=`${t.toFixed(1)}s of ${total.toFixed(0)}s, scene ${last+1} of ${sb.scenes.length}`;
+    playBtn.textContent=playing?"Pause":"Play";
+  }
+  const iv=setInterval(()=>{
+    if(!wrap.isConnected){ clearInterval(iv); Object.values(media).forEach(m=>URL.revokeObjectURL(m.url)); return; }
+    if(!playing) return;
+    t+=0.1; if(t>=total) t=0;
+    if(plat==="live"){ chatT+=0.1; if(chatT>1.5){ chatT=0; pushChat(); if(Math.random()<.4) viewers=Math.max(20,viewers+Math.round(Math.random()*14-5)); } }
+    paint();
+  },100);
+  playBtn.onclick=()=>{ playing=!playing; paint(); };
+  wrap.querySelector("[data-restart]").onclick=()=>{ t=0; last=-1; paint(); };
+  wrap.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{ plat=b.dataset.p; wrap.querySelectorAll("[data-p]").forEach(x=>x.setAttribute("aria-selected",String(x===b))); build(); });
+  build();
+}
+
+function confirmSpend(n){
+  return confirm(`Generate ${n} clip${n>1?"s":""} with Gemini Omni?\n\nEach clip is billed to the Google Cloud project behind your Gemini API key. Check current pricing at ai.google.dev/gemini-api/docs/pricing.`);
+}
+
+/* ---------------- run ---------------- */
+function buildStrip(steps){
+  $("#strip").innerHTML = steps.map((s,i)=>`<div class="frame" role="listitem" id="fr${i}" data-state="queued"><div class="who">${esc(AGENTS[s.agent].name)}</div><div class="st">Queued</div></div>`).join("");
+  $("#outputs").innerHTML="";
+}
+function setFrame(i,state,label){ const f=$("#fr"+i); if(!f) return; f.dataset.state=state; f.querySelector(".st").textContent=label; }
+function outCard(i,step){
+  const el=document.createElement("article"); el.className="out";
+  el.innerHTML=`<header><h3>${esc(AGENTS[step.agent].name)}</h3><span class="task">${esc(step.task)}</span><button class="btn ghost small" data-copy>Copy</button></header><div class="waiting">Thinking…</div><div class="md" hidden></div>`;
+  $("#outputs").appendChild(el); return el;
+}
+
+async function planWithProducer(brief, lang){
+  const catalog = Object.entries(AGENTS).map(([id,a])=>`- ${id}: ${a.name}. ${a.blurb}`).join("\n");
+  const prompt = `You are the Producer of an AI crew for an Instagram creator. Pick the smallest useful sequence of agents (1 to 4 steps) to fulfil the request. Later agents see earlier agents' output, so order matters (e.g. hooks before script before caption). Use visual (last) whenever the creator wants to see, preview, visualize or storyboard the content, or wants AI images or videos. An agent may appear twice only if truly needed.\n\nAGENTS\n${catalog}\n\nCREATOR PROFILE\n${profileText()}\nREQUEST\n${brief}\n\nReply with only JSON: {"summary": "one short sentence describing the plan, addressed to the creator", "steps": [{"agent": "<agent id>", "task": "<specific instruction for this agent, one sentence>"}]}`;
+  const plan = await sample.json(prompt,{modelTier:"quick"});
+  const steps = (Array.isArray(plan && plan.steps) ? plan.steps : [])
+    .filter(s=>s && AGENTS[s.agent]).slice(0,4).map(s=>({agent:String(s.agent),task:String(s.task||"Do your part for this request.")}));
+  if(!steps.length) throw {code:"invalid_json"};
+  return {summary:String(plan.summary||""), steps};
+}
+
+async function run(){
+  if(running) return;
+  const brief=$("#brief").value.trim(), lang=$("#lang").value;
+  if(!health.claude){ showClaudeNote(ERR.no_claude_key); return; }
+  if(mode.type==="producer" && !brief){ $("#brief").focus(); $("#brief").placeholder="Tell the Producer what you need first, or pick a crew or agent below."; return; }
+  running=true; stopped=false; $("#go").disabled=true; $("#stop").hidden=false; $("#copyAll").hidden=true; $("#claudeNote").hidden=true;
+  $("#run").hidden=false; $("#runStatus").textContent="";
+  let steps, title;
+  try{
+    if(mode.type==="crew"){ const c=CREWS.find(c=>c.id===mode.id); steps=c.steps.map(([agent,task])=>({agent,task})); title=c.name; $("#planNote").textContent=""; }
+    else if(mode.type==="agent"){ steps=[{agent:mode.id,task:brief?"Do what the request asks, within your specialty.":"Give your most useful output for this creator right now."}]; title=AGENTS[mode.id].name; $("#planNote").textContent=""; }
+    else{
+      $("#strip").innerHTML=`<div class="frame" data-state="working"><div class="who">Producer</div><div class="st">Picking your crew</div></div>`;
+      $("#outputs").innerHTML=""; $("#planNote").textContent="";
+      const plan=await planWithProducer(brief,lang); steps=plan.steps; title="Producer run"; $("#planNote").textContent=plan.summary;
+    }
+  }catch(e){ finish(); handleErr(e); return; }
+
+  buildStrip(steps);
+  $("#run").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+  const done=[]; const runRef={id:null,steps:null};
+  for(let i=0;i<steps.length;i++){
+    if(stopped){ setFrame(i,"queued","Skipped"); continue; }
+    const step=steps[i], card=outCard(i,step), box=card.querySelector(".md"), wait=card.querySelector(".waiting");
+    setFrame(i,"working","Working");
+    ctl=new AbortController();
+    try{
+      if(step.agent==="visual"){
+        wait.textContent="Storyboarding your scenes…";
+        const raw=await sample.json(visualPrompt(step.task,brief,done,lang),{signal:ctl.signal,cache:false});
+        const sb=cleanStoryboard(raw), text=storyboardMd(sb);
+        wait.hidden=true; box.hidden=false; box.classList.remove("md");
+        renderPreview(box,sb,()=>{ if(runRef.id) store.updateRun(runRef.id,{steps:runRef.steps}).catch(()=>{}); });
+        done.push({agent:step.agent,task:step.task,text,sb});
+        const cb=card.querySelector("[data-copy]"); cb.textContent="Copy storyboard"; cb.onclick=()=>copy(text,cb);
+        setFrame(i,"done","Done"); continue;
+      }
+      const {text,truncated}=await sample(agentPrompt(step.agent,step.task,brief,done,lang),{
+        signal:ctl.signal, cache:false,
+        onText:({text})=>{ wait.hidden=true; box.hidden=false; box.innerHTML=md(text); }
+      });
+      box.innerHTML=md(text); box.hidden=false; wait.hidden=true;
+      done.push({agent:step.agent,task:step.task,text});
+      card.querySelector("[data-copy]").onclick=()=>copy(text,card.querySelector("[data-copy]"));
+      setFrame(i,"done",truncated?"Done (cut short)":"Done");
+    }catch(e){
+      if(e && e.text){ box.innerHTML=md(e.text); box.hidden=false; wait.hidden=true; done.push({agent:step.agent,task:step.task,text:e.text+"\n\n(interrupted)"}); }
+      else { wait.textContent = e && e.code==="cancelled" ? "Stopped." : errCopy(e); }
+      if(e && e.code==="cancelled"){ setFrame(i,"error","Stopped"); stopped=true; continue; }
+      setFrame(i,"error","Failed"); handleErr(e); stopped=true;
+    }
+  }
+  lastRun=done;
+  if(done.length){
+    const r={title:(brief||title).slice(0,90), crew:title, lang, createdAt:Date.now(), steps:done.map(d=>({...d,text:d.text.slice(0,40000)}))};
+    try{ runRef.id=await store.addRun(r); runRef.steps=r.steps; $("#runStatus").textContent="Saved to your library."; }catch(e){ $("#runStatus").textContent="Couldn’t save this run; copy anything you want to keep."; }
+    $("#copyAll").hidden=false;
+  }
+  finish();
+}
+function finish(){ running=false; $("#go").disabled=false; $("#stop").hidden=true; }
+function handleErr(e){
+  if(!e || e.code==="cancelled") return;
+  showClaudeNote(errCopy(e));
+  if(HARD.has(e.code)) { $("#go").disabled=true; }
+}
+function showClaudeNote(t){ const n=$("#claudeNote"); n.textContent=t; n.hidden=false; }
+$("#stop").onclick=()=>{ stopped=true; ctl && ctl.abort(); };
+$("#go").onclick=run;
+$("#brief").addEventListener("keydown",e=>{ if(e.key==="Enter"&&(e.metaKey||e.ctrlKey)) run(); });
+$("#copyAll").onclick=()=>copy(runToMd(lastRun),$("#copyAll"));
+function runToMd(steps){ return (steps||[]).map(s=>`## ${AGENTS[s.agent]?.name||s.agent}\n\n${s.text}`).join("\n\n---\n\n"); }
+async function copy(text,btn){
+  try{ await navigator.clipboard.writeText(text); const o=btn.textContent; btn.textContent="Copied"; setTimeout(()=>btn.textContent=o,1400); }
+  catch(e){ btn.textContent="Select and copy manually"; }
+}
+
+/* ---------------- library ---------------- */
+async function renderLibrary(){
+  const el=$("#lib"); el.innerHTML="<p class='empty'>Loading…</p>";
+  $("#libNote").hidden=true;
+  let runs=[]; try{ runs=await store.listRuns(); }catch(e){ el.innerHTML="<p class='empty'>Couldn’t load your library from this browser.</p>"; return; }
+  if(!runs.length){ el.innerHTML="<p class='empty'>Nothing here yet. Run a crew or an agent in the Studio and it lands here.</p>"; return; }
+  el.innerHTML="";
+  runs.forEach(r=>{
+    const d=document.createElement("details"); d.className="lib-item";
+    const when=new Date(r.createdAt).toLocaleString(undefined,{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"});
+    d.innerHTML=`<summary><b></b><small>${esc(r.crew||"")}, ${esc(when)}</small></summary><div class="lib-body"></div>`;
+    d.querySelector("summary b").textContent=r.title||"Untitled run";
+    const body=d.querySelector(".lib-body");
+    (r.steps||[]).forEach(s=>{ const h=document.createElement("h4"); h.textContent=AGENTS[s.agent]?.name||s.agent; const m=document.createElement("div");
+      if(s.sb && Array.isArray(s.sb.scenes)){ body.append(h,m); try{ renderPreview(m,s.sb,()=>store.updateRun(r.id,{steps:r.steps}).catch(()=>{})); }catch(e){ m.className="md"; m.innerHTML=md(s.text||""); } }
+      else { m.className="md"; m.innerHTML=md(s.text||""); body.append(h,m); } });
+    const bar=document.createElement("div"); bar.style.cssText="display:flex;gap:8px;padding:8px 20px 0";
+    const c=document.createElement("button"); c.className="btn ghost small"; c.textContent="Copy everything"; c.onclick=()=>copy(runToMd(r.steps),c);
+    const x=document.createElement("button"); x.className="btn ghost small"; x.textContent="Delete";
+    x.onclick=async()=>{ if(x.dataset.confirm){ await store.delRun(r.id); d.remove(); } else { x.dataset.confirm="1"; x.textContent="Click again to delete"; } };
+    bar.append(c,x); body.append(bar); el.append(d);
+  });
+}
+
+/* ---------------- profile ---------------- */
+function fillProfile(){ const f=$("#profileForm"); Object.keys(DEFAULT_PROFILE).forEach(k=>{ if(f.elements[k]) f.elements[k].value=profile[k]||""; }); $("#savedNote").textContent=""; }
+$("#saveProfile").onclick=async()=>{
+  const f=$("#profileForm"), p={}; Object.keys(DEFAULT_PROFILE).forEach(k=>{ if(f.elements[k]) p[k]=f.elements[k].value.trim(); });
+  profile=p; $("#lang").value=p.lang||"en";
+  try{ await store.setProfile(p); $("#savedNote").textContent = "Saved in this browser. Every agent will use this."; }
+  catch(e){ $("#savedNote").textContent="This browser blocked saving. It’s kept for this visit only."; }
+};
+
+/* ---------------- password gate ---------------- */
+let gateResolve=null;
+function showGate(msg){ $("#gateMsg").textContent=msg||"Enter the password you set as APP_PASSWORD on Vercel."; $("#gate").hidden=false; setTimeout(()=>$("#gatePw").focus(),0); return new Promise(r=>gateResolve=r); }
+$("#gateForm").onsubmit=async e=>{
+  e.preventDefault();
+  try{ localStorage.setItem(PW_KEY,$("#gatePw").value); }catch(_){}
+  const h=await fetch("/api/health",{headers:hdrs()}).then(r=>r.json()).catch(()=>({}));
+  if(!h.authorized){ $("#gateMsg").textContent="That password didn’t work. Try again."; $("#gatePw").select(); return; }
+  health=h; $("#gate").hidden=true; $("#claudeNote").hidden=true; $("#go").disabled=false;
+  if(!health.claude) showClaudeNote(ERR.no_claude_key);
+  gateResolve&&gateResolve();
+};
+
+/* ---------------- boot ---------------- */
+renderPickers(); setMode({type:"producer"});
+show((location.hash||"#studio").slice(1));
+(async()=>{
+  try{ health=await fetch("/api/health",{headers:hdrs()}).then(r=>r.json()); }catch(e){ showClaudeNote("Can’t reach the Creator Crew API. Check the Vercel deployment, then reload."); }
+  if(health.passwordSet===false) showClaudeNote("Set APP_PASSWORD in Vercel’s environment variables and redeploy. Until then the agents stay locked.");
+  else if(!health.authorized) await showGate();
+  else if(!health.claude) showClaudeNote(ERR.no_claude_key);
+  profile = await store.getProfile();
+  $("#lang").value = profile.lang || "en";
+  if(!$("#tab-profile").hidden) fillProfile();
+})();
+</script>
+</body>
+</html>
